@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 __author__ = 'ery'
 
-# from ._template import *
+from ._template import *
 # from .settings import *
 # from .users import *
 # from .user_bahavior_log import *

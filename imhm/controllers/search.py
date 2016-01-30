@@ -59,6 +59,6 @@ def search_push(idx):
     return jsonify({"state": 1, "found_songs_idx": None}), 200
 
 
-@app.route("/search/poll/<int:idx>/", methods=["GET"])
-def search_poll(idx):
+@app.route("/search/result/<int:idx>/", methods=["GET"])
+def search_get_result(idx):
     return jsonify({"state": 2, "found_songs_idx": [1, 2, 3]}), 200
