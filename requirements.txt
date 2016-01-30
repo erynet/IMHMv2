@@ -46,6 +46,6 @@ uwsgicachetop==1.0.0
 uwsgiFouine==1.7.dev0
 uwsgi_cache==1.0
 #uwsgi_metrics==1.1.5
-uwsgi-stub==0.1.2
+#uwsgi-stub==0.1.2
 uwsgi-sloth==2.1.2
 python-redis-lock==2.3.0

@@ -10,5 +10,5 @@ from .flask_cache_config import *
 from .flask_401_error_list import *
 from .celery_config import *
 from .push_message_code import *
-from .user_bahavior_code import *
+# from .user_behavior_code import *
 

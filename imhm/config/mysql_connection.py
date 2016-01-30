@@ -6,7 +6,7 @@ mysqldb_connect_strings = \
     {
         "Setting":
             {
-                "unix_socket": "/var/run/mysqld/mysqld.sock"
+                "unix_socket": "/var/run/mysqld/mysqld.sock",
                 "user": "root",
                 "passwd": "1423",
                 "db": "IMHM",
@@ -16,7 +16,7 @@ mysqldb_connect_strings = \
 
         "Common":
             {
-                "unix_socket": "/var/run/mysqld/mysqld.sock"
+                "unix_socket": "/var/run/mysqld/mysqld.sock",
                 "user": "root",
                 "passwd": "1423",
                 "db": "IMHM",

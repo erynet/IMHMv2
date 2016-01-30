@@ -9,7 +9,7 @@ from werkzeug.contrib.fixers import ProxyFix
 
 from imhm import create_app
 from imhm.models import *
-from imhm.tools import Base, DB, GS
+from imhm.tools import Base, DB
 
 app = create_app()
 app.wsgi_app = ProxyFix(app.wsgi_app)
@@ -21,9 +21,7 @@ server = Server(host="0.0.0.0")
 
 
 def make_shell_context():
-    return dict(app=app, db=DB.get_session(), s=GS,
-                PenaltyLog=PenaltyLog
-                )
+    return dict(app=app, db=DB.get_session(),)
 
 
 manager.add_command("shell", Shell(make_context=make_shell_context))
@@ -34,11 +32,6 @@ manager.add_command("runserver", server)
 @manager.command
 def initdb():
     Base.metadata.create_all(bind=DB.get_engine())
-
-
-@manager.command
-def reset_variables():
-    GS.reset_to_default()
 
 if __name__ == "__main__":
     manager.run()

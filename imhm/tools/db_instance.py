@@ -12,7 +12,7 @@ from sqlalchemy.exc import DisconnectionError, DBAPIError
 from sqlalchemy.ext.declarative import declarative_base
 
 from imhm.tools import Singleton
-from imhm.tools import GS
+# from imhm.tools import GS
 from imhm.config import mysqldb_connect_strings, mysql_connector_connect_strings, \
     sqlalchemy_engine_settings, sqlalchemy_sessionmaker_settings, sqlalchemy_queuepool_settings
 
@@ -22,10 +22,10 @@ class DbInstance(object):
 
     def __init__(self):
         # print("create")
-        self._mode = GS.getd("OPERATION_MODE", "development")
+        self._mode = "production" # GS.getd("OPERATION_MODE", "development")
         if not ((self._mode == "development") or (self._mode == "production")):
             raise ValueError("Invalid value on OPERATION_MODE : %s" % (self._mode, ))
-        self._connector = GS.getd("SQLALCHEMY_CONNECTOR", "MySQLdb")
+        self._connector = "MySQLdb" # GS.getd("SQLALCHEMY_CONNECTOR", "MySQLdb")
         if not ((self._connector == "MySQLdb") or (self._connector == "mysql.connector")):
             raise ValueError("Invalid value on SQLALCHEMY_CONNECTOR : %s" % (self._connector, ))
 
@@ -100,33 +100,34 @@ def event_pool_checkout(dbapi_con, connection_record, connection_proxy):
 
 
 # http://docs.sqlalchemy.org/en/latest/core/events.html
-if not GS.is_production():
-    @event.listens_for(DB.get_pool(), "checkin")
-    def event_pool_checkin(dbapi_con, connection_record):
-        print("HOOK : event_pool_checkin")
-
-    @event.listens_for(DB.get_pool(), "connect")
-    def event_pool_connect(dbapi_con, connection_record):
-        print("HOOK : event_pool_connect")
+# if not GS.is_production():
+@event.listens_for(DB.get_pool(), "checkin")
+def event_pool_checkin(dbapi_con, connection_record):
+    print("HOOK : event_pool_checkin")
 
 
-    @event.listens_for(DB.get_pool(), "first_connect")
-    def event_pool_first_connect(dbapi_con, connection_record):
-        print("HOOK : event_pool_first_connect")
+@event.listens_for(DB.get_pool(), "connect")
+def event_pool_connect(dbapi_con, connection_record):
+    print("HOOK : event_pool_connect")
 
 
-    @event.listens_for(DB.get_pool(), "invalidate")
-    def event_pool_invalidate(dbapi_con, connection_record, connection_proxy):
-        print("HOOK : event_pool_invalidate")
+@event.listens_for(DB.get_pool(), "first_connect")
+def event_pool_first_connect(dbapi_con, connection_record):
+    print("HOOK : event_pool_first_connect")
 
 
-    @event.listens_for(DB.get_pool(), "reset")
-    def event_pool_reset(dbapi_con, connection_record):
-        print("HOOK : event_pool_reset")
+@event.listens_for(DB.get_pool(), "invalidate")
+def event_pool_invalidate(dbapi_con, connection_record, connection_proxy):
+    print("HOOK : event_pool_invalidate")
 
 
-    @event.listens_for(DB.get_pool(), "soft_invalidate")
-    def event_pool_soft_invalidate(dbapi_con, connection_record, connection_proxy):
-        print("HOOK : event_pool_soft_invalidate")
+@event.listens_for(DB.get_pool(), "reset")
+def event_pool_reset(dbapi_con, connection_record):
+    print("HOOK : event_pool_reset")
+
+
+@event.listens_for(DB.get_pool(), "soft_invalidate")
+def event_pool_soft_invalidate(dbapi_con, connection_record, connection_proxy):
+    print("HOOK : event_pool_soft_invalidate")
 
 
