@@ -7,13 +7,14 @@ except ImportError:
     import json
 
 from datetime import datetime, timedelta
-from flask import abort, Blueprint, request, jsonify, session
+from flask import abort, Blueprint, request, jsonify, session, make_response
 
 from sqlalchemy import func, or_, and_, text
 
 from imhm.tools import DB
 from imhm.tools import pre_request_logging, after_request_logging
 from imhm.tools import check_req_data, parse_session, admin_only, login_required
+from imhm.tools import StrCat
 from imhm.config import f401
 from imhm.models import *
 
@@ -126,7 +127,8 @@ def search_push_raw():
 
     try:
         with db.begin_nested():
-            sp = SearchPacket(session_idx=ss.idx, sequence=d["sequence"], data=d["b64stream"])
+            sp = SearchPacket(session_idx=ss.idx, sequence=d["sequence"],
+                              data=d["b64stream"], length=d["b64stream"].__len__())
             db.add(sp)
     except Exception, e:
         print str(e)
@@ -138,6 +140,26 @@ def search_push_raw():
         return jsonify({"state": ss.state, "found_songs_idx": cPickle.loads(ss.result)}), 200
     else:
         return jsonify({"state": ss.state, "found_songs_idx": None}), 200
+
+
+@app.route("/search/download/<int:idx>/", methods=["GET"])
+def search_download(idx):
+    ss = db.query(SearchSession).filter_by(idx=idx).first()
+    if not ss:
+        raise abort(404)
+
+    sps = db.query(SearchPacket).filter_by(session_idx=ss.idx).order_by(SearchPacket.sequence.asc()).all()
+    if not sps:
+        raise abort(401)
+
+    import base64
+    with StrCat() as s:
+        print s
+        for sp in sps:
+            s.append(base64.b64decode(sp.data))
+        res = make_response(str(s))
+    res.headers["Content-Disposition"] = "attachment; filename=SearchSession-{0}.pcm".format(ss.idx)
+    return res, 200
 
 
 @app.route("/search/result/<int:idx>/", methods=["GET"])

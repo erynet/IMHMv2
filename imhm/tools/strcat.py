@@ -11,9 +11,9 @@ class StrCat(object):
             self._str.write(seed)
 
     def __enter__(self):
-        pass
+        return self
 
-    def __exit__(self):
+    def __exit__(self, type, value, traceback):
         self._str.close()
 
     def __str__(self):
