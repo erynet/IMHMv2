@@ -22,7 +22,7 @@ class DbInstance(object):
 
     def __init__(self):
         # print("create")
-        self._mode = "production" # GS.getd("OPERATION_MODE", "development")
+        self._mode = "development" # GS.getd("OPERATION_MODE", "development")
         if not ((self._mode == "development") or (self._mode == "production")):
             raise ValueError("Invalid value on OPERATION_MODE : %s" % (self._mode, ))
         self._connector = "MySQLdb" # GS.getd("SQLALCHEMY_CONNECTOR", "MySQLdb")

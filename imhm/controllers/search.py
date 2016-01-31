@@ -42,21 +42,58 @@ app.after_request(after_request_logging)
 
 @app.route("/search/begin/", methods=["GET"])
 def search_begin():
-    return jsonify({"idx": 1}), 200
+    try:
+        with db.begin_nested():
+            ss = SearchSession()
+            db.add(ss)
+    except Exception, e:
+        print str(e)
+        raise abort(500)
+    db.commit()
+
+    return jsonify({"idx": ss.idx}), 200
 
 
 @app.route("/search/end/<int:idx>/", methods=["GET"])
 def search_end(idx):
-    return jsonify({"state": 0, "found_songs_idx": None}), 200
+    ss = db.query(SearchSession).filter_by(idx=idx).first()
+    if not ss:
+        raise abort(404)
+
+    try:
+        with db.begin_nested():
+            ss.end_at = datetime.now()
+    except Exception, e:
+        print str(e)
+        raise abort(500)
+    db.commit()
+
+    import cPickle
+    return jsonify({"state": ss.state, "found_songs_idx": cPickle.loads(ss.result)}), 200
 
 
 @app.route("/search/push/<int:idx>/", methods=["POST"])
 def search_push(idx):
-    is_ok, d, _ = check_req_data(request, essential_list=["index", "b64stream"])
+    is_ok, d, _ = check_req_data(request, essential_list=["b64stream"])
     if not is_ok:
         raise abort(400)
 
-    return jsonify({"state": 1, "found_songs_idx": None}), 200
+    ss = db.query(SearchSession).filter_by(idx=idx).first()
+    if not ss:
+        raise abort(404)
+
+    try:
+        with db.begin_nested():
+            sp = SearchPacket(session_idx=idx, sequence=ss.current_sequence_index, data=d["b64stream"])
+            ss.current_sequence_index += 1
+            db.add(sp)
+    except Exception, e:
+        print str(e)
+        raise abort(500)
+    db.commit()
+
+    import cPickle
+    return jsonify({"state": ss.state, "found_songs_idx": cPickle.loads(ss.result)}), 200
 
 
 @app.route("/search/result/<int:idx>/", methods=["GET"])
