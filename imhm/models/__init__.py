@@ -2,6 +2,11 @@
 __author__ = 'ery'
 
 from ._template import *
+from .music import *
+from .user import *
+from .search_history import *
+from .search_session import *
+from .search_packet import *
 # from .settings import *
 # from .users import *
 # from .user_bahavior_log import *

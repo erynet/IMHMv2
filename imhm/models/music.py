@@ -4,18 +4,20 @@ __author__ = 'ery'
 import sys
 sys.setdefaultencoding = "utf-8"
 
-from sqlalchemy import Column, Index, ForeignKey, Integer, Float, Boolean, String, DateTime, TIMESTAMP
+from sqlalchemy import Column, Index, ForeignKey, Integer, Float, Boolean, String, DateTime, TIMESTAMP, BLOB
 from sqlalchemy.sql import functions
 
 from imhm.tools import Base, SerializerMixin
 from imhm.models import Template
 
 
-class SearchHistory(Base, SerializerMixin, Template):
-    __tablename__ = "search_history"
+class Music(Base, SerializerMixin, Template):
+    __tablename__ = "music"
 
-    title = Column(String, ForeignKey("user.idx", ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
-    music_idx = Column(Integer, ForeignKey("music.idx", ondelete="CASCADE", onupdate="CASCADE"), nullable=False)
-    latitude = Column(Float, nullable=False)
-    longitude = Column(Float, nullable=False)
-    search_date = Column(TIMESTAMP, server_default=functions.current_timestamp(), nullable=False)
+    title = Column(String(64), nullable=False)
+    artist = Column(String(32), nullable=True)
+    album_name = Column(String(128), nullable=True)
+    length = Column(Integer, nullable=False)
+    genre = Column(String(32))
+    album_image = Column(BLOB, nullable=True)
+    release_date = Column(DateTime, nullable=True)

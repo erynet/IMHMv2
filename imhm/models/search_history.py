@@ -19,3 +19,5 @@ class SearchHistory(Base, SerializerMixin, Template):
     latitude = Column(Float, nullable=False)
     longitude = Column(Float, nullable=False)
     search_date = Column(TIMESTAMP, server_default=functions.current_timestamp(), nullable=False)
+
+    idx_user_idx_search_date = Index("idx_user_idx_search_date", user_idx, search_date)
