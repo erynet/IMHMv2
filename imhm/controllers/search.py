@@ -102,6 +102,44 @@ def search_push(idx):
         return jsonify({"state": ss.state, "found_songs_idx": None}), 200
 
 
+@app.route("/search/push_raw/", methods=["POST"])
+def search_push_raw():
+    is_ok, d, _ = check_req_data(request, essential_list=["username", "sequence", "b64stream"])
+    if not is_ok:
+        raise abort(400)
+
+    user = db.query(User).filter_by(username=d["username"]).first()
+    if not user:
+        raise abort(404)
+
+    if d["sequence"] == 0:
+        try:
+            with db.begin_nested():
+                ss = SearchSession(user_idx=user.idx)
+                db.add(ss)
+        except Exception, e:
+            print str(e)
+            raise abort(500)
+    else:
+        ss = db.query(SearchSession).\
+            filter_by(user_idx=user.idx, state=0).order_by(SearchSession.begin_at.desc()).first()
+
+    try:
+        with db.begin_nested():
+            sp = SearchPacket(session_idx=ss.idx, sequence=d["sequence"], data=d["b64stream"])
+            db.add(sp)
+    except Exception, e:
+        print str(e)
+        raise abort(500)
+    db.commit()
+
+    import cPickle
+    if isinstance(ss.result, str):
+        return jsonify({"state": ss.state, "found_songs_idx": cPickle.loads(ss.result)}), 200
+    else:
+        return jsonify({"state": ss.state, "found_songs_idx": None}), 200
+
+
 @app.route("/search/result/<int:idx>/", methods=["GET"])
 def search_get_result(idx):
     return jsonify({"state": 2, "found_songs_idx": [1, 2, 3]}), 200
