@@ -69,7 +69,10 @@ def search_end(idx):
     db.commit()
 
     import cPickle
-    return jsonify({"state": ss.state, "found_songs_idx": cPickle.loads(ss.result)}), 200
+    if isinstance(ss.result, str):
+        return jsonify({"state": ss.state, "found_songs_idx": cPickle.loads(ss.result)}), 200
+    else:
+        return jsonify({"state": ss.state, "found_songs_idx": None}), 200
 
 
 @app.route("/search/push/<int:idx>/", methods=["POST"])
@@ -93,7 +96,10 @@ def search_push(idx):
     db.commit()
 
     import cPickle
-    return jsonify({"state": ss.state, "found_songs_idx": cPickle.loads(ss.result)}), 200
+    if isinstance(ss.result, str):
+        return jsonify({"state": ss.state, "found_songs_idx": cPickle.loads(ss.result)}), 200
+    else:
+        return jsonify({"state": ss.state, "found_songs_idx": None}), 200
 
 
 @app.route("/search/result/<int:idx>/", methods=["GET"])
