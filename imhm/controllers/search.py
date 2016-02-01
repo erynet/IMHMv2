@@ -71,9 +71,9 @@ def search_end(idx):
 
     import cPickle
     if isinstance(ss.result, str):
-        return jsonify({"state": ss.state, "found_songs_idx": cPickle.loads(ss.result)}), 200
+        return jsonify({"state": ss.state, "current_session_idx": ss.idx, "found_songs_idx": cPickle.loads(ss.result)}), 200
     else:
-        return jsonify({"state": ss.state, "found_songs_idx": None}), 200
+        return jsonify({"state": ss.state, "current_session_idx": ss.idx, "found_songs_idx": None}), 200
 
 
 @app.route("/search/push/<int:idx>/", methods=["POST"])
@@ -98,9 +98,9 @@ def search_push(idx):
 
     import cPickle
     if isinstance(ss.result, str):
-        return jsonify({"state": ss.state, "found_songs_idx": cPickle.loads(ss.result)}), 200
+        return jsonify({"state": ss.state, "current_session_idx": ss.idx, "found_songs_idx": cPickle.loads(ss.result)}), 200
     else:
-        return jsonify({"state": ss.state, "found_songs_idx": None}), 200
+        return jsonify({"state": ss.state, "current_session_idx": ss.idx, "found_songs_idx": None}), 200
 
 
 @app.route("/search/push_raw/", methods=["POST"])
@@ -137,9 +137,9 @@ def search_push_raw():
 
     import cPickle
     if isinstance(ss.result, str):
-        return jsonify({"state": ss.state, "found_songs_idx": cPickle.loads(ss.result)}), 200
+        return jsonify({"state": ss.state, "current_session_idx": ss.idx, "found_songs_idx": cPickle.loads(ss.result)}), 200
     else:
-        return jsonify({"state": ss.state, "found_songs_idx": None}), 200
+        return jsonify({"state": ss.state, "current_session_idx": ss.idx, "found_songs_idx": None}), 200
 
 
 @app.route("/search/download/<int:idx>/", methods=["GET"])

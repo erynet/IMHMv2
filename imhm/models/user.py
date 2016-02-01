@@ -19,4 +19,5 @@ class User(Base, SerializerMixin, Template, UserMixin):
     username = Column(String(64), unique=True, nullable=False)
     password = Column(String(64), nullable=False)
     uuid = Column(String(128), nullable=True)
+    nick = Column(String(64), nullable=True)
 
