@@ -22,14 +22,15 @@ cache = Cache(app, config=flask_cache_configs["Redis"])
 
 
 def create_app():
-    OPERATION_MODE = "development"
+    # OPERATION_MODE = "development"
+    OPERATION_MODE = "production"
     app.config.from_object(flask_config[OPERATION_MODE])
     flask_config[OPERATION_MODE].init_app(app)
 
     app.config["SESSION_TYPE"] = flask_config[OPERATION_MODE].SESSION_TYPE
     app.config["PERMANENT_SESSION_LIFETIME"] = datetime.timedelta(seconds=7200)
 
-    from imhm.controllers import (management_bp, search_bp)
+    from imhm.controllers import (management_bp, search_bp, music_bp)
 
     # register blueprints.
     blueprints = [v for k, v in locals().items()

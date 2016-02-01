@@ -3,6 +3,7 @@
 #from .users import *
 from .management import *
 from .search import *
+from .music import *
 #from .address import *
 #from .price import *
 #from .terms import *

@@ -10,6 +10,7 @@ except ImportError:
 from flask import abort, Blueprint, request, jsonify, session
 
 from imhm.tools import DB
+from imhm.utils.async.functions import android_push, do_recognize_session
 # from coock.tools import pre_request_logging, after_request_logging
 # from coock.tools import check_req_data, admin_only, login_required
 # from coock.models import Users, UsersExtend, UserBehaviorLog
@@ -35,4 +36,11 @@ app = management_bp
 
 @app.route("/_m/ping/", methods=["GET", "POST"])
 def management_ping():
+    return jsonify({}), 200
+
+
+@app.route("/_m/gcm/", methods=["GET"])
+def test_gcm():
+    android_push.apply_async(args=["dummyuuid", u"123456"])
+    do_recognize_session.apply_async(args=[1, 2])
     return jsonify({}), 200

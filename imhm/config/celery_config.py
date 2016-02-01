@@ -5,18 +5,17 @@ from datetime import timedelta
 
 
 class CeleryConfigCommon(object):
-    BROKER_URL = "redis://192.168.137.120:63709/5"
-    CELERY_RESULT_BACKEND = "redis://192.168.137.120:63709/6"
+    # BROKER_URL = "redis://localhost:6379/1"
+    # CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
+    # BROKER_URL = "redis+socket:///tnp/redis.sock?virtual_host=1"
+    # CELERY_RESULT_BACKEND = "redis+socket:///tnp/redis.sock?virtual_host=1"
+    BROKER_URL = "amqp://guest:guest@localhost:5672/"
+    # CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
     CELERY_ENABLE_UTC = False
     CELERY_ACCEPT_CONTENT = ["pickle", "json", "msgpack", "yaml"]
-    CELERY_REDIS_MAX_CONNECTIONS = 32
-
-    CELERYBEAT_SCHEDULE = {
-        "patrol": {
-            "task": "coock.utils.async.functions.patrol",
-            "schedule": timedelta(seconds=15)
-        },
-    }
+    # CELERY_REDIS_MAX_CONNECTIONS = 32
+    CELERY_RESULT_BACKEND = 'amqp'
+    CELERY_TASK_RESULT_EXPIRES = 18000
 
 
 class CeleryConfigDevelopment(CeleryConfigCommon):
